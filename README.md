@@ -4,7 +4,7 @@ Ansible playbooks that install and configure Vault with Consul backend-- behind 
 
 ## Notes
 
-1. A stand-by HAProxy host is highly recommended in this setup.
+1. This demo requires `Vagrant` and `VirtualBox`.
 1. The consul encryption key is hardcoded in ansible-vault.
 1. Initializing and unsealing the vault is a manual step.
 1. Vagrant assumes your public key is available at ~/.ssh/id_rsa.pub
@@ -38,3 +38,7 @@ Ansible playbooks that install and configure Vault with Consul backend-- behind 
 1. Each vault requires three keys to unseal. Each vault must be unsealed individually.
 
 ```vault unseal <key$>```
+
+## Author and  License
+Copyright (c) 2021 Shey Sewani, MIT License
+
