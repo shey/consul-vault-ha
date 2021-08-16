@@ -1,0 +1,74 @@
+- name: create the consul group
+  group:
+    name: consul
+    state: present
+
+- name: create the consul user
+  user:
+    name: consul
+    groups: consul
+    shell: /sbin/nologin
+
+- name: setup the consul installation directory structure
+  file:
+    dest: /opt/consul
+    state: directory
+    owner: consul
+    group: consul
+    mode: 0755
+
+- name: setup the consul data directory
+  file:
+    dest: /opt/consul/data
+    state: directory
+    owner: consul
+    group: consul
+    mode: 0755
+
+- name: setup the consul configuration directory
+  file:
+    dest: /etc/consul.d/
+    state: directory
+    owner: consul
+    group: consul
+    mode: 0755
+
+- name: setup directory for pid file
+  file:
+    dest: /run/consul
+    state: directory
+    owner: consul
+    group: consul
+    mode: 0755
+
+- name: setup the consul configuration hierarchy
+  file:
+    path: /etc/consul.d/{{item}}
+    state: directory
+    owner: consul
+    group: consul
+    recurse: true
+  with_items:
+    - bootstrap
+    - server
+    - client
+
+- name: download consul zip
+  get_url:
+    url: https://releases.hashicorp.com/consul/1.10.1/consul_1.10.1_linux_amd64.zip
+    dest: /usr/local/src/consul_1.10.1_linux_amd64.zip
+    checksum: "sha256:abd9a7696e2eeed66fdb28965c220a2ba45ee5cd79ff263557f5392291aab730"
+
+- name: extract the consul zip
+  unarchive:
+    src: /usr/local/src/consul_1.10.1_linux_amd64.zip
+    dest: /opt/consul/
+    copy: no
+
+- name: symlink consul to /usr/local/bin/
+  file:
+    src: /opt/consul/consul
+    dest: /usr/local/bin/consul
+    state: link
+    mode: 0755
+

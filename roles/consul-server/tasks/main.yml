@@ -1,0 +1,41 @@
+- name: configure consul host as consul server
+  template:
+    src: config.json.j2
+    dest: /etc/consul.d/server/config.json
+    mode: 0600
+    owner: consul
+    group: consul
+
+- name: Create consul systemd service config file
+  template:
+    src: consul.service.j2
+    dest: "/etc/systemd/system/consul.service"
+    owner: root
+    group: root
+    mode: 0664
+
+# other nodes have joined the cluster already
+# dependent on the ordering of the inventory
+- name: stop and disable bootstrapped service
+  systemd:
+    name: bootstrap
+    daemon_reload: yes
+    state: stopped
+    enabled: no
+  when: inventory_hostname in groups['bootstrap']
+
+- name: Making sure consul has stopped
+  wait_for:
+    path:  /run/consul/consul.pid
+    delay: 5
+    timeout: 10
+    state: absent
+    msg: "pidfile is still present"
+  when: inventory_hostname in groups['bootstrap']
+
+- name: enable consul systemd service
+  systemd:
+    name: consul
+    daemon_reload: yes
+    state: started
+    enabled: yes

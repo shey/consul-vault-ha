@@ -1,0 +1,10 @@
+{
+    "bootstrap": false,
+    "server": true,
+    "datacenter": "{{ datacentre }}",
+    "data_dir": "/opt/consul/data",
+    "encrypt": "{{ consul_encryption_key }}",
+    "log_level": "INFO",
+    "enable_syslog": true,
+    "start_join": [{% for host in groups['consul_servers'] | difference(inventory_hostname) %}"{{host}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+}

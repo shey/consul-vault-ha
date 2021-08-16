@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+# make linux less swappy
+vm.swappiness = 10
+
+# do not overcommit memory
+vm.overcommit_memory = {{overcommit_memory | default('0')}}
+vm.overcommit_ratio = 50

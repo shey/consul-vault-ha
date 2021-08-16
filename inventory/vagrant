@@ -1,0 +1,32 @@
+consul01   ansible_user=vagrant  ansible_host=10.128.32.101
+consul02   ansible_user=vagrant  ansible_host=10.128.32.102
+consul03   ansible_user=vagrant  ansible_host=10.128.32.103
+
+proxy01   ansible_user=vagrant ansible_host=10.128.33.100
+
+vault01   ansible_user=vagrant  ansible_host=10.128.33.101
+vault02   ansible_user=vagrant  ansible_host=10.128.33.102
+
+[bootstrap]
+consul01
+
+[proxies]
+proxy01
+
+[consuls:children]
+consul_servers
+vaults
+
+[vaults]
+vault01
+vault02
+
+[consul_servers]
+consul01
+consul02
+consul03
+
+[vagrant:children]
+consul_servers
+vaults
+proxies

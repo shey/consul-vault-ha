@@ -1,0 +1,10 @@
+- name: configure vaults
+  hosts: vaults
+  strategy: free
+  become: yes
+  become_user: root
+  roles:
+    - { role: base, tags: ['base'] }
+    - { role: consul-agent, tags: ['base', 'consul-agent', 'consul'] }
+    - { role: consul-client, tags: ['consul', 'consul-client'] }
+    - { role: vault, tags: ['vault'] }

@@ -1,0 +1,46 @@
+- name: create the vault group
+  group:
+    name: vault
+    state: present
+
+- name: create the vault user
+  user:
+    name: vault
+    shell: /bin/nologin
+    groups: vault
+    state: present
+
+- name: setup the vault installation directory structure
+  file:
+    dest: /opt/vault
+    state: directory
+    mode: 0755
+    owner: vault
+    group: vault
+
+- name: setup directory for pids
+  file:
+    dest: /run/vault/
+    state: directory
+    mode: 0755
+    owner: vault
+    group: vault
+
+- name: download Vault zip
+  get_url:
+    url: https://releases.hashicorp.com/vault/1.8.1/vault_1.8.1_linux_amd64.zip
+    dest: /usr/local/src/vault_1.8.1_linux_amd64.zip
+    checksum: "sha256:bb411f2bbad79c2e4f0640f1d3d5ef50e2bda7d4f40875a56917c95ff783c2db"
+
+- name: extract the vault zip
+  unarchive:
+    src: /usr/local/src/vault_1.8.1_linux_amd64.zip
+    dest: /opt/vault/
+    copy: no
+
+- name: symlink vault to /usr/local/bin/
+  file:
+    src: /opt/vault/vault
+    dest: /usr/local/bin/vault
+    state: link
+    mode: 0755

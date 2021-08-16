@@ -1,0 +1,36 @@
+### BEGIN INIT INFO
+# Provides:          Consul discovery service
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Bootstrap Consul server
+# Description:       Consul service discovery framework
+### END INIT INFO
+
+# {{ ansible_managed }}
+
+[Unit]
+Description=Consul Bootstrap
+Documentation=https://www.consul.io/docs/index.html
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=consul
+Group=consul
+PIDFile=/run/consul/consul.pid
+PermissionsStartOnly=true
+
+ExecStart=/usr/local/bin/consul agent \
+    -config-dir=/etc/consul.d/bootstrap \
+    -pid-file=/run/consul/consul.pid \
+    -bind={{ ansible_host }}
+
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target

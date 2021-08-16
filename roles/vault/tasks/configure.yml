@@ -1,0 +1,30 @@
+- name: configure vault
+  template:
+    src: vault-config.hcl.j2
+    dest: /opt/vault/config.hcl
+  tags: vault-config
+
+- name: generate vault systemd service config
+  template:
+    src: vault.service.j2
+    dest: "/etc/systemd/system/vault.service"
+    owner: root
+    group: root
+    mode: 0644
+  tags: vault-config
+
+- name: enable vault systemd service
+  systemd:
+    name: vault
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+  tags: vault-config
+
+- name: make VAULT_ADDR evn variable easily available
+  template:
+    src: profile.j2
+    dest: /etc/profile.d/00-vault.sh
+    owner: root
+    group: root
+    mode: 0755

@@ -1,0 +1,7 @@
+- name: build haproxy
+  hosts: proxies
+  become: yes
+  become_user: root
+  roles:
+    - role: base
+    - { role: haproxy, tags: ['haproxy'] }

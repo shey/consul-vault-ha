@@ -1,0 +1,6 @@
+- name:  bootstrap the consul cluster
+  hosts: bootstrap
+  become: yes
+  become_user: root
+  roles:
+    - role: consul-bootstrap

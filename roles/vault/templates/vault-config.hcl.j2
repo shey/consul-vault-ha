@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+listener "tcp" {
+  address               = "{{ ansible_host }}:8200"
+  cluster_address       = "{{ ansible_host }}:8201"
+  tls_disable           = "true"
+}
+
+backend "consul" {
+  address               = "127.0.0.1:8500"
+  path                  = "vault/"
+  scheme                = "http"
+  disable_clustering    = "false"
+}
+
+api_addr = "http://{{ groups.proxies[0] }}:8200"
+cluster_addr = "http://{{ ansible_host }}:8201"

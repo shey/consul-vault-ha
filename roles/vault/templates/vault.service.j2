@@ -1,0 +1,36 @@
+### BEGIN INIT INFO
+# Provides:          Consul agent service
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Consul agent
+# Description:       Consul service discovery framework
+### END INIT INFO
+
+# {{ ansible_managed }}
+
+[Unit]
+Description=vault server
+Documentation=https://vaultproject.io/docs/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=vault
+Group=vault
+PIDFile=/run/vault/vault.pid
+PermissionsStartOnly=true
+
+ExecStart=/usr/local/bin/vault server \
+    -config=/opt/vault/config.hcl \
+    >> /var/log/vault.log 2>&1
+
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+LimitMEMLOCK=infinity
+
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+- name: install consul packages
+  hosts: consul_servers
+  become: yes
+  become_user: root
+  strategy: free
+  roles:
+    - { role: base, tags: ['base'] }
+    - { role: consul-agent, tags: ['consul', 'consul-agent'] }

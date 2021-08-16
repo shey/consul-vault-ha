@@ -1,0 +1,32 @@
+- name: remove irq balance for haproxy
+  apt:
+    name: irqbalance
+    state: absent
+    purge: yes
+
+- name: install haproxy and friends
+  apt:
+    name: ['haproxy', haproxyctl]
+    state: latest
+
+- name: install hatop
+  get_url:
+    url: "https://github.com/jhunt/hatop/archive/v0.8.0.tar.gz"
+    dest: /usr/local/src/hatop.tar.gz
+    checksum: "sha256:bcdab1664358ec83027957df11bbeb322df1a96d414a3ccc4e211532b82c4ad2"
+  tags: ['hatop']
+
+- name: extract source package
+  unarchive:
+    src: /usr/local/src/hatop.tar.gz
+    dest: /usr/local/src/
+    copy: no
+  tags: ['hatop']
+
+- name: copy binary
+  file:
+    src: /usr/local/src/hatop-0.8.0/bin/hatop
+    dest: /usr/local/bin/hatop
+    mode: 0755
+    state: link
+  tags: ['hatop']

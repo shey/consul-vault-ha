@@ -1,0 +1,9 @@
+- name: configure consul hosts as agents
+  gather_facts: yes
+  hosts: consul_servers
+  become: yes
+  become_user: root
+  serial: 1
+  order: reverse_sorted
+  roles:
+    - role: consul-server
